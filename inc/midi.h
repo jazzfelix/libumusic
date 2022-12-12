@@ -1,6 +1,8 @@
 #ifndef MIDI_H
 #define	MIDI_H
 
+#include <stdint.h>
+
 #define MIDI_SEND_BUFFER_SIZE 8
 
 struct midi_s {

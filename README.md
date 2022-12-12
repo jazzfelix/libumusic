@@ -1,1 +1,3 @@
 # libumusic
+
+Microcontroller Music Library
