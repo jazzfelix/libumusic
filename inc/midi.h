@@ -1,5 +1,5 @@
-#ifndef MIDI_H
-#define	MIDI_H
+#ifndef LUM_MIDI_H
+#define	LUM_MIDI_H
 
 #include <stdint.h>
 
@@ -25,5 +25,5 @@ struct midi_s {
     uint8_t sent_cc[128];
 };
 
-#endif	/* MIDI_H */
+#endif	/* LUM_MIDI_H */
 
