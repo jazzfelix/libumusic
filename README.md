@@ -26,12 +26,13 @@ ALWAYS_INLINE lum_process_pc (uint8_t pc);
 ALWAYS_INLINE lum_process_bend (uint16_t bend);
 ```
 
-In `lum_process_note` check if `midi->cmd` is a Note On (`0x90`) or
+In `lum_process_note ()` check if `midi->cmd` is a Note On (`0x90`) or
 Note Off (`0x80`). You might also want to use `midi->note` and `midi->velocity`.
 Receiving `midi->velocity == 0` and Command `0x90` means you have just
 received a Note Off. Some keyboards or softwares send it like that.
 
-In `lum_process_cc` you can read `midi->cc` and `midi->cc_value`.
+`lum_process_cc ()` processes Control Change messages. You can read `midi->cc` (Controller number)
+and `midi->cc_value` (Controller value) inside this function.
 
 ## Roadmap
 
