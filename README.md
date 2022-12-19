@@ -15,7 +15,7 @@ Declare an empty structure for MIDI data:
 
 In Regular intervals of less then 1 ms call this function:
 
-`lum_midi_rx (&midi)`
+`lum_midi_rx (&midi);`
 
 Implement the following functions:
 
