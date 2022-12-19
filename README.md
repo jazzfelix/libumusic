@@ -19,12 +19,13 @@ In Regular intervals of less then 1 ms call this function:
 
 Implement the following functions:
 
-`
-ALWAYS_INLINE lum_process_note (struct midi_s* midi);<br>
-ALWAYS_INLINE lum_process_cc (struct midi_s* midi);<br> 
-ALWAYS_INLINE lum_process_pc (uint8_t pc);<br> 
-ALWAYS_INLINE lum_process_bend (uint16_t bend);<br> 
-`
+```
+ALWAYS_INLINE lum_process_note (struct midi_s* midi);
+ALWAYS_INLINE lum_process_cc (struct midi_s* midi); 
+ALWAYS_INLINE lum_process_pc (uint8_t pc);
+ALWAYS_INLINE lum_process_bend (uint16_t bend);
+```
+
 In `lum_process_note` check if `midi->cmd` is a Note On (`0x90`) or
 Note Off (`0x80`). You might also want to use `midi->note` and `midi->velocity`.
 Receiving `midi->velocity == 0` and Command `0x90` means you have just
