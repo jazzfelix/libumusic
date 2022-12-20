@@ -26,6 +26,15 @@ ALWAYS_INLINE void* lum_process_pc (uint8_t pc);
 ALWAYS_INLINE void* lum_process_bend (uint16_t bend);
 ```
 
+These functions will be called whenever a MIDI event of the according
+type is received:
+|  message type  |     function     |
+|----------------|------------------|
+|  note on/off   | lum_process_note |
+| control change | lum_process_cc   |
+| program change | lum_process_pc   |
+| pitch bend     | lum_process_bend |
+
 They always need to be present even if you don't need them.
 At least implement them with an empty function body:
 
