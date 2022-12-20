@@ -5,6 +5,8 @@ It is very fast and uses very low memory.
 
 # Usage
 
+Configure `lum` according to your hardware in `libumusic/inc/config.h`.
+
 Include `libumusic/inc/lum.h` in your C code:
 
 `#include "libumusic/inc/lum.h"`

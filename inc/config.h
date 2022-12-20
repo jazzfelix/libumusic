@@ -3,13 +3,16 @@
 
 #include "lum.h"
 
-/* hardware specific configuration */
+/*********** hardware specific configuration ***********/
 
+/* UART receive buffer empty flag */
 #define MIDI_DATA_AVAILABLE (U1STAHbits.URXBE == 0)
 
-#define MIDI_TX_BUFFER_SIZE 8
-
+/* UART receive buffer register */
 #define MIDI_RX_BYTE U1RXREG
+
+/* MIDI send is not implemented yet */
+#define MIDI_TX_BUFFER_SIZE 8
 
 #endif	/* LUM_CONFIG_H */
 
