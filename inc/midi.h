@@ -26,21 +26,10 @@ ALWAYS_INLINE uint8_t lum_midi_rx_byte (void)
 	return MIDI_RX_BYTE;
 }
 
-__attribute__((weak)) void lum_process_note (struct midi_s* midi)
-{
-}
-
-__attribute__((weak)) void lum_process_cc (struct midi_s* midi)
-{
-}
-
-__attribute__((weak)) void lum_process_pc (uint8_t pc)
-{
-}
-
-__attribute__((weak)) void lum_process_bend (uint16_t bend)
-{
-}
+ALWAYS_INLINE void* lum_process_note (struct midi_s* midi);
+ALWAYS_INLINE void* lum_process_cc (struct midi_s* midi);
+ALWAYS_INLINE void* lum_process_pc (uint8_t pc);
+ALWAYS_INLINE void* lum_process_bend (uint16_t bend);
 
 ALWAYS_INLINE void lum_midi_rx (struct midi_s* midi)
 {
