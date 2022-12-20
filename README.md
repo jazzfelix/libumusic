@@ -1,8 +1,8 @@
 # libumusic - Library for Microcontroller Music
-# or short: lum / lµm
+# short: lum / lµm
 
 Currently this is just a parser for receiving and handling MIDI messages in C programs. It is optimised for running on microcontrollers.
-It is very fast and uses very low memory.
+It is very fast and uses very low memory. 
 
 # Usage
 
