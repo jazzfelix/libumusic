@@ -39,10 +39,10 @@ They always need to be present even if you don't need them.
 At least implement them with an empty function body:
 
 ```
-ALWAYS_INLINE void* lum_process_note (struct midi_s* midi) {}
-ALWAYS_INLINE void* lum_process_cc (struct midi_s* midi) {}
-ALWAYS_INLINE void* lum_process_pc (struct midi_s* midi) {}
-ALWAYS_INLINE void* lum_process_bend (struct midi_s* midi) {}
+ALWAYS_INLINE void lum_process_note (struct midi_s* midi) {}
+ALWAYS_INLINE void lum_process_cc (struct midi_s* midi) {}
+ALWAYS_INLINE void lum_process_pc (uint8_t pc) {}
+ALWAYS_INLINE void lum_process_bend (uint16_t bend) {}
 ```
 
 To interact with the rest of your code you need to prepare global variables
