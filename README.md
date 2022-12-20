@@ -58,6 +58,21 @@ received a Note Off. Some keyboards or softwares send it like that.
 `lum_process_cc ()` processes Control Change messages. You can read `midi->cc` (Controller number)
 and `midi->cc_value` (Controller value) inside this function.
 
+Here is a simple example for an implementation of `lum_process_note`:
+
+```
+uint8_t pitch    = 0;
+uint8_t velocity = 0;
+bool trigger     = false;
+
+ALWAYS_INLINE void lum_process_note (struct midi_s* midi)
+{
+	pitch    = midi->note;
+	velocity = midi->velocity;
+	trigger  = true;
+}
+```
+
 ## Roadmap
 
 This will contain handling of polyphony one day.
