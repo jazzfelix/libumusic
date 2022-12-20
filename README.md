@@ -20,10 +20,10 @@ In Regular intervals of less then 1 ms call this function:
 Implement the following functions in your code:
 
 ```
-ALWAYS_INLINE void* lum_process_note (struct midi_s* midi);
-ALWAYS_INLINE void* lum_process_cc (struct midi_s* midi);
-ALWAYS_INLINE void* lum_process_pc (uint8_t pc);
-ALWAYS_INLINE void* lum_process_bend (uint16_t bend);
+ALWAYS_INLINE void lum_process_note (struct midi_s* midi);
+ALWAYS_INLINE void lum_process_cc (struct midi_s* midi);
+ALWAYS_INLINE void lum_process_pc (uint8_t pc);
+ALWAYS_INLINE void lum_process_bend (uint16_t bend);
 ```
 
 These functions will be called whenever a MIDI event of the according
@@ -44,6 +44,11 @@ ALWAYS_INLINE void* lum_process_cc (struct midi_s* midi) {}
 ALWAYS_INLINE void* lum_process_pc (struct midi_s* midi) {}
 ALWAYS_INLINE void* lum_process_bend (struct midi_s* midi) {}
 ```
+
+To interact with the rest of your code you need to prepare global variables
+which these functions can modify. If you want to change a variable `pitch` for
+example `pitch` needs to be declared globally or in the same *.c file as the
+function `lum_process_note`.
 
 In `lum_process_note ()` check if `midi->cmd` is a Note On (`0x90`) or
 Note Off (`0x80`). You might also want to use `midi->note` and `midi->velocity`.
