@@ -87,6 +87,7 @@ ALWAYS_INLINE void lum_process_note (struct midi_s* midi)
 - [ ] handler for polyphony
 - [ ] example code
 - [ ] documentation
+- [ ] functions for sending MIDI data (notes, control change, clock, play, stop, continue, ...)
 - [ ] receive MIDI clock and transport commands (time code, song position/select, clock, play, stop, continue, reset)
 - [ ] receive MIDI aftertouch
 - [ ] receive MIDI polyphonic aftertouch
