@@ -94,5 +94,5 @@ ALWAYS_INLINE void lum_process_note (struct midi_s* midi)
 
 ## Disclaimer
 
-I test all my code on dsPIC hardware. I might nonetheless push untested code.
-I will add release or version tags to tested code though.
+I test all my code on dsPIC hardware. I will nonetheless push untested code.
+I add release tags to tested code though.
