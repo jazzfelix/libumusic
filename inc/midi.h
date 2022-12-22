@@ -6,7 +6,7 @@
 
 #define LUM_OMNI 17
 
-struct midi_s {
+struct lum_midi_s {
     uint8_t channel;
     uint8_t rx_byte;
     uint8_t cmd;
@@ -26,12 +26,12 @@ ALWAYS_INLINE uint8_t lum_midi_rx_byte (void)
 	return MIDI_RX_BYTE;
 }
 
-ALWAYS_INLINE void lum_process_note (struct midi_s* midi);
-ALWAYS_INLINE void lum_process_cc (struct midi_s* midi);
+ALWAYS_INLINE void lum_process_note (struct lum_midi_s* midi);
+ALWAYS_INLINE void lum_process_cc (struct lum_midi_s* midi);
 ALWAYS_INLINE void lum_process_pc (uint8_t pc);
 ALWAYS_INLINE void lum_process_bend (uint16_t bend);
 
-ALWAYS_INLINE void lum_midi_rx (struct midi_s* midi)
+ALWAYS_INLINE void lum_midi_rx (struct lum_midi_s* midi)
 {
 	if (MIDI_DATA_AVAILABLE) {
 		/* store midi byte */
