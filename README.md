@@ -78,9 +78,19 @@ ALWAYS_INLINE void lum_process_note (struct midi_s* midi)
 
 ## Roadmap
 
-This will contain handling of polyphony one day.
+### Done
 
-I will provide example code and more detailed documentation in the future.
+- [ ] MIDI parser
+
+### To Do
+
+- [ ] handler for polyphony
+- [ ] example code
+- [ ] documentation
+- [ ] receive MIDI clock and transport commands (time code, song position/select, clock, play, stop, continue, reset)
+- [ ] receive MIDI aftertouch
+- [ ] receive MIDI polyphonic aftertouch
+- [ ] basic scheduling
 
 ## Disclaimer
 
