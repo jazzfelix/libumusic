@@ -5,16 +5,12 @@
 
 /*********** hardware specific configuration ***********/
 
-/* UART receive buffer empty flag */
-#define MIDI_DATA_AVAILABLE (U1STAHbits.URXBE == 0)
+#include "dspic33c.h"
 
-/* UART receive buffer register */
-#define MIDI_RX_BYTE U1RXREG
+/*********** software specific configuration ***********/
 
 /* MIDI send is not implemented yet */
 #define MIDI_TX_BUFFER_SIZE 8
-
-/*********** software specific configuration ***********/
 
 /* Number of polyphonic voices - must be between 1 and 128 */
 #define LUM_POLY_VOICES 8

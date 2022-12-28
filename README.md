@@ -7,6 +7,9 @@ It is very fast and uses very low memory.
 # Usage
 
 Configure `lum` according to your hardware in `libumusic/inc/config.h`.
+This involves including a header for your microcontroller. At the moment only
+`dspic33c.h` is provided. If you use another microcontroller you will have to
+copy this file and edit it to match your microcontroller of choice.
 
 Include `libumusic/inc/lum.h` in your C code:
 
