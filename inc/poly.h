@@ -4,20 +4,9 @@
 #include "lum.h"
 #include <stdint.h>
 
-/*
-union keybits_u
-{
-	uint64_t keys64[2];
-	uint32_t keys32[4];
-	uint16_t keys16[8];
-	uint8_t keys8[16];
-};
-*/
-
 struct lum_poly_s
 {
 	uint8_t num_keys;
-	union keybits_u keyboard;
 	keybits_t keybits[128 / sizeof (keybits_t)];
 	uint8_t playing_notes[LUM_POLY_VOICES];
 	uint8_t playing_velocities[LUM_POLY_VOICES];
@@ -33,8 +22,6 @@ struct lum_poly_s lum_init_poly (void)
 	{
 		lum_poly.velocity[i] = 0;
 	}
-	lum_poly.keyboard.keys64[0] = 0;
-	lum_poly.keyboard.keys64[1] = 0;
 	lum_poly.num_keys = 0;
 	for (i = 0; i < LUM_POLY_VOICES; i++)
 	{
@@ -100,15 +87,6 @@ void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 	 		/* 2. Add 1 to the keypress counter. */
 			poly->num_keys += 1;
 			/* 3. Update the keypress bit array. */
-			/* bad unportable code: */
-			utmp8 = note;
-			if (utmp8 > 63)
-			{
-				utmp8 -= 64;
-				poly->keyboard.keys64[1] |= (uint64_t)1 << utmp8;
-			} else {
-				poly->keyboard.keys64[0] |= (uint64_t)1 << utmp8;
-			}
 			/* do hardware dependend stuff here: */
 			lum_poly_fill_array (note, &poly->keybits);
 		}
@@ -119,14 +97,8 @@ void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 			/* 2. Subtract 1 from the keypress counter. */
 			poly->num_keys -= 1;
 			/* 3. Update the keypress bit array. */
-			utmp8 = note;
-			if (utmp8 > 63)
-			{
-				utmp8 -= 64;
-				poly->keyboard.keys64[1] &= !((uint64_t)1 << utmp8);
-			} else {
-				poly->keyboard.keys64[0] &= !((uint64_t)1 << utmp8);
-			}
+			/* do hardware dependend stuff here: */
+			lum_poly_clr_array (note, &poly->keybits);
 	}
 	/* 4. Update the note array. */
 	poly->velocity[note] = velocity;
@@ -137,7 +109,7 @@ void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 	{
 		/* find bottom note */
 		/* count leading zeros in keyboard bit array */
-		note_count = lum_poly_ff1l (&poly->keyboard);
+		note_count = lum_poly_ff1l (&poly->keybits);
 		/* play it, make sure we don't retrigger */
 		/* x = x - 1 */
 		utmp8 -= 1;
@@ -146,7 +118,7 @@ void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 		while (utmp8 > 1)
 		{
 			/* find next note from top */
-			note_count = lum_poly_ff1r (&poly->keyboard, &start);
+			note_count = lum_poly_ff1r (&poly->keybbits, &start);
 			/* play it, make sure we don't retrigger */
 			/* x = x - 1 */
 			utmp8 -= 1;
