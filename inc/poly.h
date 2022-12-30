@@ -4,6 +4,7 @@
 #include "lum.h"
 #include <stdint.h>
 
+/*
 union keybits_u
 {
 	uint64_t keys64[2];
@@ -11,15 +12,16 @@ union keybits_u
 	uint16_t keys16[8];
 	uint8_t keys8[16];
 };
+*/
 
 struct lum_poly_s
 {
 	uint8_t num_keys;
 	union keybits_u keyboard;
-	union keybits_u keyboard_reversed;
-	uint8_t playing_notes[LUM_POLY_VOICES]
-	uint8_t playing_velocities[LUM_POLY_VOICES]
-	uint8_t playing_triggers[LUM_POLY_VOICES]
+	keybits_t keybits[128 / sizeof (keybits_t)];
+	uint8_t playing_notes[LUM_POLY_VOICES];
+	uint8_t playing_velocities[LUM_POLY_VOICES];
+	uint8_t playing_triggers[LUM_POLY_VOICES];
 	uint8_t velocity[128];
 };
 
@@ -33,14 +35,16 @@ struct lum_poly_s lum_init_poly (void)
 	}
 	lum_poly.keyboard.keys64[0] = 0;
 	lum_poly.keyboard.keys64[1] = 0;
-	lum_poly.keyboard_reversed.keys64[0] = 0;
-	lum_poly.keyboard_reversed.keys64[1] = 0;
 	lum_poly.num_keys = 0;
 	for (i = 0; i < LUM_POLY_VOICES; i++)
 	{
-		playing_notes[i] = 0;
-		playing_velocities[i] = 0;
-		playing_triggers[i] = 0;
+		lum_poly.playing_notes[i] = 0;
+		lum_poly.playing_velocities[i] = 0;
+		lum_poly.playing_triggers[i] = 0;
+	}
+	for (i = 0; i < (128 / sizeof (keybits_t)); i++)
+	{
+		lum_poly.keybits[i] = 0;
 	}
 	return lum_poly;
 }
@@ -96,6 +100,7 @@ void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 	 		/* 2. Add 1 to the keypress counter. */
 			poly->num_keys += 1;
 			/* 3. Update the keypress bit array. */
+			/* bad unportable code: */
 			utmp8 = note;
 			if (utmp8 > 63)
 			{
@@ -104,6 +109,8 @@ void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 			} else {
 				poly->keyboard.keys64[0] |= (uint64_t)1 << utmp8;
 			}
+			/* do hardware dependend stuff here: */
+			lum_poly_fill_array (note, &poly->keybits);
 		}
 	} else { /* Else (Note Off): */
 		/* 1. Check if note is already off. */
