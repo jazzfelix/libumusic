@@ -28,13 +28,16 @@ void static __attribute__((always_inline, flatten)) inline
 lum_poly_clr_array (uint8_t note, keybits_t keybits[])
 {
 	int16_t i;
+	uint16_t bits;
 	i = 0;
 	while (note > 15)
 	{
 		i++;
 		note -= sizeof (keybits_t) * 8;
 	}
-	keybits[i] = keybits[i] & !(1 << (15 - note));
+	bits       = keybits[i];
+	bits       = bits & ~(1 << (15 - note));
+	keybits[i] = bits;
 }
 
 /* the following 4 xxx_ff1x functions only work when compiled with O1, not O0 */
