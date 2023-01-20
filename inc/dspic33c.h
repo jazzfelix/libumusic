@@ -37,25 +37,21 @@ lum_poly_clr_array (uint8_t note, keybits_t keybits[])
 	keybits[i] = keybits[i] & !(1 << (15 - note));
 }
 
+/* the following 4 xxx_ff1x functions only work when compiled with O1, not O0 */
+
 uint16_t static __attribute__((always_inline, flatten)) inline
-lum_ff1l (uint16_t x)
+lum_ff1l (uint16_t register x)
 {
-	uint16_t result;
-	asm ("FF1L %0, %1"
-		: "=r"(result)
-		: "r"(x)
-	);
+	uint16_t register result;
+    	asm ("ff1l %0, %1" : "=r"(result) : "r"(x));
 	return result;
 }
 
 uint8_t static __attribute__((always_inline, flatten)) inline
-lum_ff1r (uint16_t x)
+lum_ff1r (uint16_t register x)
 {
 	uint16_t result;
-	asm ("FF1R %0, %1"
-		: "=r"(result)
-		: "r"(x)
-	);
+    	asm ("ff1r %0, %1" : "=r"(result) : "r"(x));
 	return result;
 }
 
@@ -66,9 +62,11 @@ lum_poly_ff1l (keybits_t *keys)
 	int16_t i;
 	int16_t count = -1;
 	uint16_t tmp;
+	uint16_t register x;
 	for (i = 0; i < (128 / sizeof (keybits_t) / 8); i++)
 	{
-		tmp = lum_ff1l(keys[i]);
+		x = keys[i];
+		tmp = lum_ff1l(x);
 		if (tmp == 0)
 		{
 			count += sizeof (keybits_t) * 8;
@@ -86,10 +84,12 @@ lum_poly_ff1r (keybits_t *keys, uint8_t *start)
 	int16_t i;
 	int16_t count;
 	uint16_t tmp;
+	uint16_t register x;
 	count = ((*start >> 3) << 3) + 8;
 	for (i = *start / sizeof (keybits_t) / 8; i >= 0; i--)
 	{
-		tmp = lum_ff1r(keys[i]);
+		x = keys[i];
+		tmp = lum_ff1r(x);
 		if (tmp == 0)
 		{
 			count -= sizeof (keybits_t) * 8;
