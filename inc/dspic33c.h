@@ -88,10 +88,18 @@ lum_poly_ff1r (keybits_t *keys, uint8_t *start)
 	int16_t count;
 	uint16_t tmp;
 	uint16_t register x;
-	count = ((*start >> 3) << 3) + 8;
+	uint16_t mask;
+	uint16_t maskbit;
+	maskbit = *start & 0xf;
+	mask    = (1 << maskbit);
+	mask--;
+	maskbit = 16 - maskbit;
+	mask    = mask << maskbit;
+	count   = ((*start >> 3) << 3) + 8;
 	for (i = *start / sizeof (keybits_t) / 8; i >= 0; i--)
 	{
 		x = keys[i];
+		x = x & mask;
 		tmp = lum_ff1r(x);
 		if (tmp == 0)
 		{
