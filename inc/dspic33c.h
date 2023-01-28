@@ -11,6 +11,19 @@ typedef uint16_t keybits_t;
 /* UART receive buffer register */
 #define MIDI_RX_BYTE U1RXREG
 
+/*  Note storage for fast implementation of BOTTOM2ND note stealing algorithm
+ *
+ *  The array keybits is holding one bit for each of the 128 notes.
+ *  The elements of the array keybits are 16 bit wide.
+ *  The array can be visualised like a big 128 bit variable.
+ *  It is starting left with bit number 0 and ending right at bit number 127.
+ *  keybits[0]   [1]    [2]    [3]    ... [7]
+ *         0..15 16..31 32..47 48..63 ... 112..127
+ *  Bit ordering is a bit confusing because normally it is counted from
+ *   right to left. See bit shift: 1 << 15
+ *
+ */
+
 void static __attribute__((always_inline, flatten)) inline
 lum_poly_fill_array (uint8_t note, keybits_t (keybits[]))
 {
@@ -96,13 +109,17 @@ lum_poly_ff1r (keybits_t *keys, uint8_t *start)
 	mask    = 1 << maskbit;
 	mask    = mask - 1;
 	mask    = ~mask;
-	// not good:
-	//mask    = (1 << maskbit);
-	//mask--;
-	//maskbit = 15 - maskbit;
-	//mask    = mask << maskbit;
-	count   = ((*start >> 3) << 3) + 8;
-	for (i = *start / sizeof (keybits_t) / 8; i >= 0; i--)
+	// example detect bit 20 when 22 is set too
+	// start must be 22 (or 21?)
+	// maskbit = *start & 0xf; // = 6
+	// maskbit = 16 - 6; // = 10
+	// mask    = 1 << 10; // = 1024
+	// mask    = 1024 - 1; // = 1023 = 0x3ff
+	// mask    = ~1023; // = 0b1111110000000000 = 0xfc00
+	// mask is only valid within the first for loop!
+	// count   = ((*start >> 3) << 3) + 8;
+	count   = *start;
+	for (i = count / sizeof (keybits_t) / 8; i >= 0; i--)
 	{
 		x = keys[i];
 		x = x & mask;
@@ -110,9 +127,10 @@ lum_poly_ff1r (keybits_t *keys, uint8_t *start)
 		if (tmp == 0)
 		{
 			count -= sizeof (keybits_t) * 8;
+			mask  = 0xffff; /* mask is not valid anymore */
 		} else {
 			count -= tmp;
-			break;
+			break; /* found a note, end for loop */
 		}
 	}
 	return count;
