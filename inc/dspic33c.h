@@ -104,21 +104,23 @@ lum_poly_ff1r (keybits_t *keys, uint8_t *start)
 	volatile uint16_t mask;
 	volatile uint16_t maskbit;
 	maskbit = *start & 0xf; /* 0 .. 15 */
-	// idea:
-	maskbit = 15 - maskbit;
-	mask    = 1 << maskbit;
-	mask    = mask - 1;
-	mask    = ~mask;
-	// example detect bit 20 when 22 is set too
-	// start must be 22 (or 21?)
-	// maskbit = *start & 0xf; // = 6
-	// maskbit = 16 - 6; // = 10
-	// mask    = 1 << 10; // = 1024
-	// mask    = 1024 - 1; // = 1023 = 0x3ff
-	// mask    = ~1023; // = 0b1111110000000000 = 0xfc00
-	// mask is only valid within the first for loop!
-	// count   = ((*start >> 3) << 3) + 8;
-	count   = *start;
+	// idea: => wrong in the case of 128 or 127 
+	// (1. where to start?, 2. one bit is always missing!)
+	// maskbit = 15 - maskbit;
+	// mask    = 1 << maskbit;
+	// mask    = mask - 1;
+	// mask    = ~mask;
+	//
+	// idea2:
+	// use 0xffff and shift by masked start
+	// in case of 128 it is not shifted
+	maskbit = (16 - maskbit) & 0xf; /* adjust direction of counting */
+	mask    = 0xffff >> maskbit;    /* generate mask */
+	mask    = mask << maskbit;      /* shift mask into correct position */
+	//
+	// example detect bit 18 when 20 is set too
+	count   = ((*start >> 3) << 3) + 15; // falsch? ((20 >> 3) << 3) + 15 = 31
+	// zeile drueber ist falsch, sowie unten die berechnung von count im else
 	for (i = count / sizeof (keybits_t) / 8; i >= 0; i--)
 	{
 		x = keys[i];
@@ -129,7 +131,7 @@ lum_poly_ff1r (keybits_t *keys, uint8_t *start)
 			count -= sizeof (keybits_t) * 8;
 			mask  = 0xffff; /* mask is not valid anymore */
 		} else {
-			count -= tmp;
+			count -= tmp; // falsch?
 			break; /* found a note, end for loop */
 		}
 	}
