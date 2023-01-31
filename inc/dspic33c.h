@@ -103,14 +103,9 @@ lum_poly_ff1r (keybits_t *keys, uint8_t *start)
 	volatile uint16_t register x;
 	volatile uint16_t mask;
 	volatile uint16_t maskbit;
+	volatile uint16_t segment;
+	segment = (*start - 1) >> 4;
 	maskbit = *start & 0xf; /* 0 .. 15 */
-	// idea: => wrong in the case of 128 or 127 
-	// (1. where to start?, 2. one bit is always missing!)
-	// maskbit = 15 - maskbit;
-	// mask    = 1 << maskbit;
-	// mask    = mask - 1;
-	// mask    = ~mask;
-	//
 	// idea2:
 	// use 0xffff and shift by masked start
 	// in case of 128 it is not shifted
@@ -118,10 +113,24 @@ lum_poly_ff1r (keybits_t *keys, uint8_t *start)
 	mask    = 0xffff >> maskbit;    /* generate mask */
 	mask    = mask << maskbit;      /* shift mask into correct position */
 	//
-	// example detect bit 18 when 20 is set too
-	count   = ((*start >> 3) << 3) + 15; // falsch? ((20 >> 3) << 3) + 15 = 31
-	// zeile drueber ist falsch, sowie unten die berechnung von count im else
-	for (i = count / sizeof (keybits_t) / 8; i >= 0; i--)
+	// example detect bit 7, start = 13
+	// maskbit = 13 & 0xf = 13
+	// maskbit = (16 - 13) & 0xf = 3 & 0xf = 3
+	// mask    = 0xffff >> 3 = 0x1fff
+	// mask    = 0xffff << 3 = 0xfff8
+	// count   = ((13 >> 3) << 3) + 15 = (1 << 3) + 15 = 8 + 15 = 23
+	// for (i = 23-15 / sizeof (keybits_t) / 8 = 8 / 16 = 0; i >=0; i--)
+	// 	x = keys[0] = 260
+	// 	x = x & mask = 260 & 0xfff8 = 256 = 0x100
+	// 	tmp = lum_ff1r(256) = 9 ?
+	//	if (tmp == 0) => else
+	//		count = count - tmp = 23 - 9 = 14
+	//		count += 1 = 15
+	// return 15!!!
+	//
+	//count   = ((*start >> 3) << 3) + 15; // die Zeile ist doof, wenn ... ja wenn?
+	count   = segment * 16 + 15;
+	for (i = segment; i >= 0; i--)
 	{
 		x = keys[i];
 		x = x & mask;
@@ -129,9 +138,10 @@ lum_poly_ff1r (keybits_t *keys, uint8_t *start)
 		if (tmp == 0)
 		{
 			count -= sizeof (keybits_t) * 8;
-			mask  = 0xffff; /* mask is not valid anymore */
+			mask  = 0xffff; /* mask is not valid in the next segment */
 		} else {
-			count -= tmp; // falsch?
+			count -= tmp;
+			count += 1;
 			break; /* found a note, end for loop */
 		}
 	}
