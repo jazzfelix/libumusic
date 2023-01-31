@@ -106,9 +106,6 @@ lum_poly_ff1r (keybits_t *keys, uint8_t *start)
 	volatile uint16_t segment;
 	segment = (*start - 1) >> 4;
 	maskbit = *start & 0xf; /* 0 .. 15 */
-	// idea2:
-	// use 0xffff and shift by masked start
-	// in case of 128 it is not shifted
 	maskbit = (16 - maskbit) & 0xf; /* adjust direction of counting */
 	mask    = 0xffff >> maskbit;    /* generate mask */
 	mask    = mask << maskbit;      /* shift mask into correct position */
@@ -118,17 +115,7 @@ lum_poly_ff1r (keybits_t *keys, uint8_t *start)
 	// maskbit = (16 - 13) & 0xf = 3 & 0xf = 3
 	// mask    = 0xffff >> 3 = 0x1fff
 	// mask    = 0xffff << 3 = 0xfff8
-	// count   = ((13 >> 3) << 3) + 15 = (1 << 3) + 15 = 8 + 15 = 23
-	// for (i = 23-15 / sizeof (keybits_t) / 8 = 8 / 16 = 0; i >=0; i--)
-	// 	x = keys[0] = 260
-	// 	x = x & mask = 260 & 0xfff8 = 256 = 0x100
-	// 	tmp = lum_ff1r(256) = 9 ?
-	//	if (tmp == 0) => else
-	//		count = count - tmp = 23 - 9 = 14
-	//		count += 1 = 15
-	// return 15!!!
 	//
-	//count   = ((*start >> 3) << 3) + 15; // die Zeile ist doof, wenn ... ja wenn?
 	count   = segment * 16 + 15;
 	for (i = segment; i >= 0; i--)
 	{
@@ -141,7 +128,6 @@ lum_poly_ff1r (keybits_t *keys, uint8_t *start)
 			mask  = 0xffff; /* mask is not valid in the next segment */
 		} else {
 			count -= tmp;
-			count += 1;
 			break; /* found a note, end for loop */
 		}
 	}
