@@ -116,7 +116,7 @@ lum_poly_ff1r (keybits_t *keys, uint8_t *start)
 	// mask    = 0xffff >> 3 = 0x1fff
 	// mask    = 0xffff << 3 = 0xfff8
 	//
-	count   = segment * 16 + 15;
+	count   = segment * 16 + 16;
 	for (i = segment; i >= 0; i--)
 	{
 		x = keys[i];
