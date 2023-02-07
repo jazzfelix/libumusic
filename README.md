@@ -15,9 +15,9 @@ Include `libumusic/inc/lum.h` in your C code:
 
 `#include "libumusic/inc/lum.h"`
 
-Declare an empty structure for MIDI data:
+Declare a structure for MIDI data and initialise it:
 
-`struct midi_s midi = {};`
+`struct midi_s midi = lum_midi_init (your_favourite_midi_channel 1 .. 16 or 17 for omni mode);`
 
 In Regular intervals of less then 1 ms call this function:
 
