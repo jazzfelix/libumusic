@@ -7,14 +7,14 @@
 struct lum_poly_s
 {
 	uint8_t num_keys;
-	keybits_t keybits[128 / sizeof (keybits_t)];
+	keybits_t keybits[128 / sizeof (keybits_t) / 8];
 	uint8_t playing_notes[LUM_POLY_VOICES];
 	uint8_t playing_velocities[LUM_POLY_VOICES];
 	uint8_t playing_triggers[LUM_POLY_VOICES];
 	uint8_t velocity[128];
 };
 
-struct lum_poly_s lum_init_poly (void)
+ALWAYS_INLINE struct lum_poly_s lum_init_poly (void)
 {
 	struct lum_poly_s lum_poly;
 	uint8_t i;
@@ -36,9 +36,9 @@ struct lum_poly_s lum_init_poly (void)
 	return lum_poly;
 }
 
-void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
+ALWAYS_INLINE void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 {
-#ifdef BOTTOM2ND
+#if LUM_POLY_STEALING == LUM_BOTTOM2ND
 	/* Algorithm:
 	 * Always steal the 2nd note from bottom if there are more keys pressed then voices available.
 	 * In other words:
@@ -88,7 +88,7 @@ void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 			poly->num_keys += 1;
 			/* 3. Update the keypress bit array. */
 			/* do hardware dependend stuff here: */
-			lum_poly_fill_array (note, &poly->keybits);
+			lum_poly_fill_array (note, poly->keybits);
 		}
 	} else { /* Else (Note Off): */
 		/* 1. Check if note is already off. */
@@ -98,7 +98,8 @@ void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 			poly->num_keys -= 1;
 			/* 3. Update the keypress bit array. */
 			/* do hardware dependend stuff here: */
-			lum_poly_clr_array (note, &poly->keybits);
+			lum_poly_clr_array (note, poly->keybits);
+		}
 	}
 	/* 4. Update the note array. */
 	poly->velocity[note] = velocity;
@@ -109,7 +110,7 @@ void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 	{
 		/* find bottom note */
 		/* count leading zeros in keyboard bit array */
-		note = lum_poly_ff1l (&poly->keybits);
+		note = lum_poly_ff1l (poly->keybits);
 		/* play it, make sure we don't retrigger */
 		/* x = x - 1 */
 		utmp8 -= 1;
@@ -118,7 +119,7 @@ void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 		while (utmp8 > 1)
 		{
 			/* find next note from top */
-			note = lum_poly_ff1r (&poly->keybbits, &start);
+			note = lum_poly_ff1r (poly->keybits, &start);
 			/* play it, make sure we don't retrigger */
 			/* x = x - 1 */
 			utmp8 -= 1;

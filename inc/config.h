@@ -15,8 +15,8 @@
 /* Number of polyphonic voices - must be between 1 and 128 */
 #define LUM_POLY_VOICES 8
 
-/* Polyphonic Voice Stealing Algorithm - BOTTOM2ND is the only implemented yet */
-#define LUM_POLY_STEALING BOTTOM2ND
+/* Polyphonic Voice Stealing Algorithm - LUM_BOTTOM2ND is the only implemented yet */
+#define LUM_POLY_STEALING LUM_BOTTOM2ND
 
 #endif	/* LUM_CONFIG_H */
 
