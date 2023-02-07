@@ -76,7 +76,7 @@ void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 	 */
 
 	uint8_t utmp8;
-	uint8_t note_count;
+	uint8_t note;
 	uint8_t start;
 
 	if (velocity > 0) /* If Note On: */
@@ -109,7 +109,7 @@ void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 	{
 		/* find bottom note */
 		/* count leading zeros in keyboard bit array */
-		note_count = lum_poly_ff1l (&poly->keybits);
+		note = lum_poly_ff1l (&poly->keybits);
 		/* play it, make sure we don't retrigger */
 		/* x = x - 1 */
 		utmp8 -= 1;
@@ -118,7 +118,7 @@ void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t velocity)
 		while (utmp8 > 1)
 		{
 			/* find next note from top */
-			note_count = lum_poly_ff1r (&poly->keybbits, &start);
+			note = lum_poly_ff1r (&poly->keybbits, &start);
 			/* play it, make sure we don't retrigger */
 			/* x = x - 1 */
 			utmp8 -= 1;
