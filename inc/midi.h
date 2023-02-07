@@ -21,6 +21,23 @@ struct lum_midi_s {
     uint8_t send_i;
 };
 
+ALWAYS_INLINE struct lum_midi_s lum_midi_init (uint8_t channel)
+{
+    struct lum_midi_s midi;
+    midi.channel = channel;
+    midi.rx_byte = 0;
+    midi.cmd = 0;
+    midi.stage = 0;
+    midi.velocity = 0;
+    midi.note = 0;
+    midi.cc = 0;
+    midi.cc_value = 0;
+    midi.bend1 = 0;
+    midi.send_data[MIDI_TX_BUFFER_SIZE] = 0;
+    midi.send_n = 0;
+    return midi;
+}
+
 ALWAYS_INLINE uint8_t lum_midi_rx_byte (void)
 {
 	return MIDI_RX_BYTE;
