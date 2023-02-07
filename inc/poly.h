@@ -82,7 +82,7 @@ ALWAYS_INLINE void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t 
 	if (velocity > 0) /* If Note On: */
 	{
 	 	/* 1. Check if note is already playing. */
-		if (poly->velocity[note] < 0)
+		if (poly->velocity[note] > 0)
 		{
 	 		/* 2. Add 1 to the keypress counter. */
 			poly->num_keys += 1;
