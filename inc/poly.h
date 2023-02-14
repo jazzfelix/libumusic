@@ -81,28 +81,28 @@ ALWAYS_INLINE void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t 
 
 	if (velocity > 0) /* If Note On: */
 	{
-	 	/* 1. Check if note is already playing. */
-		if (poly->velocity[note] > 0)
+	 	/* 1. Check if note is not playing. */
+		if (poly->velocity[note_num] == 0)
 		{
 	 		/* 2. Add 1 to the keypress counter. */
 			poly->num_keys += 1;
 			/* 3. Update the keypress bit array. */
 			/* do hardware dependend stuff here: */
-			lum_poly_fill_array (note, poly->keybits);
+			lum_poly_fill_array (note_num, poly->keybits);
 		}
 	} else { /* Else (Note Off): */
-		/* 1. Check if note is already off. */
-		if (poly->velocity[note] == 0)
+		/* 1. Check if note is playing. */
+		if (poly->velocity[note_num] != 0)
 		{
 			/* 2. Subtract 1 from the keypress counter. */
 			poly->num_keys -= 1;
 			/* 3. Update the keypress bit array. */
 			/* do hardware dependend stuff here: */
-			lum_poly_clr_array (note, poly->keybits);
+			lum_poly_clr_array (note_num, poly->keybits);
 		}
 	}
 	/* 4. Update the note array. */
-	poly->velocity[note] = velocity;
+	poly->velocity[note_num] = velocity;
 	/* 5. Set a variable x = number of keys pressed. */
 	utmp8 = poly->num_keys;
 	/* if x > 0: */
