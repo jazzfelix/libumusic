@@ -112,19 +112,31 @@ ALWAYS_INLINE void lum_poly (struct lum_poly_s *poly, uint8_t note_num, uint8_t 
 		/* count leading zeros in keyboard bit array */
 		note = lum_poly_ff1l (poly->keybits);
 		/* play it, make sure we don't retrigger */
+		if (poly->playing_velocities[0] == 0)
+		{
+			poly->playing_triggers[0] = 1;
+		}
+		poly->playing_notes[0]      = note;
+		poly->playing_velocities[0] = poly->velocity[note];
 		/* x = x - 1 */
 		utmp8 -= 1;
 		/* while x > 1: // makes sure we have 1 extra note */
 		start = 128;
-		while (utmp8 > 1)
+		while (utmp8 > 0)
 		{
 			/* find next note from top */
-			note = lum_poly_ff1r (poly->keybits, &start);
+			note  = lum_poly_ff1r (poly->keybits, &start);
+			start = note;
 			/* play it, make sure we don't retrigger */
+			if (poly->playing_velocities[0] == 0)
+			{
+				poly->playing_triggers[0] = 1;
+			}
+			poly->playing_notes[0]      = note;
+			poly->playing_velocities[0] = poly->velocity[note];
 			/* x = x - 1 */
 			utmp8 -= 1;
 		}
-		/* play the new note // makes sure we trigger the new note, steal from somewhere top */
 	}
 
 #endif
